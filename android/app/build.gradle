@@ -62,9 +62,10 @@ if (keystorePropertiesFile.exists()) {
     signingConfigs {
         release {
             // if (project.hasProperty('ANDROID_KEYSTORE_PASSWORD')) {
+            // Define the keystore properties from gradle.properties or GitHub Actions
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
+            storeFile file(keystoreProperties['storeFile']) // Ensure this points to the keystore path
             storePassword keystoreProperties['storePassword']
             // }
         }

@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Decode the keystore file
+      # Decode and setup keystore (from GitHub Secrets)
       - name: Decode and setup keystore
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -42,13 +42,11 @@ jobs:
 
       # Build APK
       - name: Build APK
-        run: |
-          flutter build apk --release --no-tree-shake-icons
+        run: flutter build apk --release --no-tree-shake-icons
 
       # Build AAB (Android App Bundle)
       - name: Build AAB
-        run: |
-          flutter build appbundle --release --no-tree-shake-icons
+        run: flutter build appbundle --release --no-tree-shake-icons
 
       # Sign the APK
       - name: Sign APK
