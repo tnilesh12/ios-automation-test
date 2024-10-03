@@ -1,4 +1,4 @@
-name: Build and Sign APK/AAB
+name: Build and Deploy APK/AAB to DigitalOcean Spaces
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build APK and AAB
+    name: Build, Upload, and Deploy to DigitalOcean Spaces
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +23,7 @@ jobs:
           distribution: 'adopt'
           java-version: '11'
 
-      # Setup Flutter
+      # Set up Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         # with:
@@ -72,22 +72,38 @@ jobs:
       - name: Check build outputs directory
         run: |
           echo "Listing build outputs..."
-          ls -R build/app/outputs || echo "No build outputs found"
+          ls -R build/app/outputs
+      #     ls -R build/app/outputs || echo "No build outputs found"
 
-      # Check if AAB file exists
-      - name: Check if AAB file exists
+      # # Check if AAB file exists
+      # - name: Check if AAB file exists
+      #   run: |
+      #     if [ ! -f "build/app/outputs/bundle/release/app-release.aab" ]; then
+      #       echo "AAB file not found!"
+      #       exit 1
+      #     fi
+
+      # # Upload APK and AAB as artifacts
+      # - name: Upload APK and AAB
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: app-release
+      #     path: build/app/outputs/**/*
+      #     # path: |
+      #     #   android/app/build/outputs/apk/release/app-release.apk
+      #     #   android/app/build/outputs/bundle/release/app-release.aab
+
+      # Configure AWS CLI for DigitalOcean Spaces
+
+      - name: Configure AWS CLI for DigitalOcean Spaces
         run: |
-          if [ ! -f "build/app/outputs/bundle/release/app-release.aab" ]; then
-            echo "AAB file not found!"
-            exit 1
-          fi
+          aws configure set aws_access_key_id ${{ secrets.DO_SPACES_ACCESS_KEY }}
+          aws configure set aws_secret_access_key ${{ secrets.DO_SPACES_SECRET_KEY }}
+          aws configure set default.region ${{ secrets.DO_SPACES_REGION }}
+          aws configure set default.s3.endpoint-url https://${{ secrets.DO_SPACES_ENDPOINT }}
 
-      # Upload APK and AAB as artifacts
-      - name: Upload APK and AAB
-        uses: actions/upload-artifact@v3
-        with:
-          name: app-release
-          path: build/app/outputs/**/*
-          # path: |
-          #   android/app/build/outputs/apk/release/app-release.apk
-          #   android/app/build/outputs/bundle/release/app-release.aab
+      # Upload APK and AAB to DigitalOcean Spaces
+      - name: Upload APK and AAB to DigitalOcean Spaces
+        run: |
+          aws s3 cp build/app/outputs/apk/release/app-release.apk s3://mobilify/builds/app-release.apk
+          aws s3 cp build/app/outputs/bundle/release/app-release.aab s3://mobilify/builds/app-release.aab
