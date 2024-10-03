@@ -68,11 +68,26 @@ jobs:
       #       android/app/build/outputs/apk/release/app-release-unsigned.apk \
       #       android/app/build/outputs/apk/release/app-release.apk
 
+      # Debugging step: Print the outputs directory
+      - name: Check build outputs directory
+        run: |
+          echo "Listing build outputs..."
+          ls -R build/app/outputs || echo "No build outputs found"
+
+      # Check if AAB file exists
+      - name: Check if AAB file exists
+        run: |
+          if [ ! -f "build/app/outputs/bundle/release/app-release.aab" ]; then
+            echo "AAB file not found!"
+            exit 1
+          fi
+
       # Upload APK and AAB as artifacts
       - name: Upload APK and AAB
         uses: actions/upload-artifact@v3
         with:
           name: app-release
-          path: |
-            android/app/build/outputs/apk/release/app-release.apk
-            android/app/build/outputs/bundle/release/app-release.aab
+          path: build/app/outputs/**/*
+          # path: |
+          #   android/app/build/outputs/apk/release/app-release.apk
+          #   android/app/build/outputs/bundle/release/app-release.aab
