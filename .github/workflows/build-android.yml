@@ -48,25 +48,25 @@ jobs:
       - name: Build AAB
         run: flutter build appbundle --release --no-tree-shake-icons
 
-      # Sign the APK
-      - name: Sign APK
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: |
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore android/app/key.jks \
-            -storepass $KEYSTORE_PASSWORD \
-            -keypass $KEY_PASSWORD \
-            android/app/build/outputs/apk/release/app-release-unsigned.apk $KEY_ALIAS
+      # # Sign the APK
+      # - name: Sign APK
+      #   env:
+      #     KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      #     KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      #     KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      #   run: |
+      #     jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+      #       -keystore android/app/key.jks \
+      #       -storepass $KEYSTORE_PASSWORD \
+      #       -keypass $KEY_PASSWORD \
+      #       android/app/build/outputs/apk/release/app-release-unsigned.apk $KEY_ALIAS
 
-      # Zip align APK
-      - name: Zip align APK
-        run: |
-          ${ANDROID_HOME}/build-tools/30.0.3/zipalign -v 4 \
-            android/app/build/outputs/apk/release/app-release-unsigned.apk \
-            android/app/build/outputs/apk/release/app-release.apk
+      # # Zip align APK
+      # - name: Zip align APK
+      #   run: |
+      #     ${ANDROID_HOME}/build-tools/30.0.3/zipalign -v 4 \
+      #       android/app/build/outputs/apk/release/app-release-unsigned.apk \
+      #       android/app/build/outputs/apk/release/app-release.apk
 
       # Upload APK and AAB as artifacts
       - name: Upload APK and AAB
