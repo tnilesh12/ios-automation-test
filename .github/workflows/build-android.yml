@@ -1,4 +1,4 @@
-name: Build and Deploy APK/AAB to DigitalOcean Spaces
+name: Build and Upload to DigitalOcean Spaces
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build, Upload, and Deploy to DigitalOcean Spaces
+    name: Build, Upload APK/AAB to DigitalOcean Spaces
     runs-on: ubuntu-latest
 
     steps:
@@ -73,37 +73,61 @@ jobs:
         run: |
           echo "Listing build outputs..."
           ls -R build/app/outputs
-      #     ls -R build/app/outputs || echo "No build outputs found"
+      # #     ls -R build/app/outputs || echo "No build outputs found"
 
-      # # Check if AAB file exists
-      # - name: Check if AAB file exists
+      # # # Check if AAB file exists
+      # # - name: Check if AAB file exists
+      # #   run: |
+      # #     if [ ! -f "build/app/outputs/bundle/release/app-release.aab" ]; then
+      # #       echo "AAB file not found!"
+      # #       exit 1
+      # #     fi
+
+      # # # Upload APK and AAB as artifacts
+      # # - name: Upload APK and AAB
+      # #   uses: actions/upload-artifact@v3
+      # #   with:
+      # #     name: app-release
+      # #     path: build/app/outputs/**/*
+      # #     # path: |
+      # #     #   android/app/build/outputs/apk/release/app-release.apk
+      # #     #   android/app/build/outputs/bundle/release/app-release.aab
+
+      # # Configure AWS CLI for DigitalOcean Spaces
+
+      # - name: Configure AWS CLI for DigitalOcean Spaces
       #   run: |
-      #     if [ ! -f "build/app/outputs/bundle/release/app-release.aab" ]; then
-      #       echo "AAB file not found!"
-      #       exit 1
-      #     fi
+      #     aws configure set aws_access_key_id ${{ secrets.DO_SPACES_ACCESS_KEY }}
+      #     aws configure set aws_secret_access_key ${{ secrets.DO_SPACES_SECRET_KEY }}
+      #     aws configure set default.region ${{ secrets.DO_SPACES_REGION }}
+      #     aws configure set default.s3.endpoint-url https://${{ secrets.DO_SPACES_ENDPOINT }}
 
-      # # Upload APK and AAB as artifacts
-      # - name: Upload APK and AAB
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: app-release
-      #     path: build/app/outputs/**/*
-      #     # path: |
-      #     #   android/app/build/outputs/apk/release/app-release.apk
-      #     #   android/app/build/outputs/bundle/release/app-release.aab
+      # # Upload APK and AAB to DigitalOcean Spaces
+      # - name: Upload APK and AAB to DigitalOcean Spaces
+      #   run: |
+      #     aws s3 cp build/app/outputs/apk/release/app-release.apk s3://mobilify/builds/app-release.apk
+      #     aws s3 cp build/app/outputs/bundle/release/app-release.aab s3://mobilify/builds/app-release.aab
 
-      # Configure AWS CLI for DigitalOcean Spaces
+      # Install spaces-cli
+      - name: Install spaces-cli
+        run: npm install -g spaces-cli
 
-      - name: Configure AWS CLI for DigitalOcean Spaces
+      # Set up spaces-cli configuration
+      - name: Configure spaces-cli
         run: |
-          aws configure set aws_access_key_id ${{ secrets.DO_SPACES_ACCESS_KEY }}
-          aws configure set aws_secret_access_key ${{ secrets.DO_SPACES_SECRET_KEY }}
-          aws configure set default.region ${{ secrets.DO_SPACES_REGION }}
-          aws configure set default.s3.endpoint-url https://${{ secrets.DO_SPACES_ENDPOINT }}
+          spaces-cli config --access-key-id ${{ secrets.S3_ACCESS_KEY_ID }} \
+                            --secret-access-key ${{ secrets.S3_SECRET_ACCESS_KEY }} \
+                            --space ${{ secrets.S3_SPACE }} \
+                            --region ${{ secrets.S3_REGION }}
 
-      # Upload APK and AAB to DigitalOcean Spaces
-      - name: Upload APK and AAB to DigitalOcean Spaces
+      # Upload APK and AAB to DigitalOcean Spaces using spaces-cli
+      - name: Upload APK and AAB
         run: |
-          aws s3 cp build/app/outputs/apk/release/app-release.apk s3://mobilify/builds/app-release.apk
-          aws s3 cp build/app/outputs/bundle/release/app-release.aab s3://mobilify/builds/app-release.aab
+          spaces-cli up build/app/outputs/apk/release/app-release.apk \
+                      -t /builds/app-release.apk \
+                      -s ${{ secrets.S3_SPACE }} \
+                      -r ${{ secrets.S3_REGION }}
+          spaces-cli up build/app/outputs/bundle/release/app-release.aab \
+                      -t /builds/app-release.aab \
+                      -s ${{ secrets.S3_SPACE }} \
+                      -r ${{ secrets.S3_REGION }}
