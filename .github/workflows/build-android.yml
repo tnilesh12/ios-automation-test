@@ -112,16 +112,13 @@ jobs:
       - name: Install spaces-cli
         run: npm install -g spaces-cli
 
-      # Set up environment variables for spaces-cli
-      - name: Set environment variables for spaces-cli
+      # Upload APK and AAB to DigitalOcean Spaces using spaces-cli
+      - name: Upload APK and AAB
         env:
           ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
           SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
           SPACE: ${{ secrets.S3_SPACE }}
           REGION: ${{ secrets.S3_REGION }}
-
-      # Upload APK and AAB to DigitalOcean Spaces using spaces-cli
-      - name: Upload APK and AAB
         run: |
           spaces-cli up build/app/outputs/apk/release/app-release.apk \
                       -t /builds/app-release.apk \
@@ -131,5 +128,3 @@ jobs:
                       -t /builds/app-release.aab \
                       -s $SPACE \
                       -r $REGION
-
-
