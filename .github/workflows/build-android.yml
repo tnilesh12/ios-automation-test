@@ -1,4 +1,4 @@
-name: Build and Upload to DigitalOcean Spaces
+name: Build and Upload APK/AAB to DigitalOcean Spaces
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build, Upload APK/AAB to DigitalOcean Spaces
+    name: Build and Upload to DigitalOcean Spaces
     runs-on: ubuntu-latest
 
     steps:
@@ -115,10 +115,10 @@ jobs:
       # Set up spaces-cli configuration
       - name: Configure spaces-cli
         run: |
-          spaces-cli --access-key-id ${{ secrets.S3_ACCESS_KEY_ID }} \
-                            --secret-access-key ${{ secrets.S3_SECRET_ACCESS_KEY }} \
-                            --space ${{ secrets.S3_SPACE }} \
-                            --region ${{ secrets.S3_REGION }}
+          spaces-cli setup --access-key-id ${{ secrets.S3_ACCESS_KEY_ID }} \
+                           --secret-access-key ${{ secrets.S3_SECRET_ACCESS_KEY }} \
+                           --space ${{ secrets.S3_SPACE }} \
+                           --region ${{ secrets.S3_REGION }}
 
       # Upload APK and AAB to DigitalOcean Spaces using spaces-cli
       - name: Upload APK and AAB
