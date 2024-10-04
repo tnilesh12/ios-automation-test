@@ -120,6 +120,7 @@ jobs:
           SPACE: ${{ secrets.S3_SPACE }}
           REGION: ${{ secrets.S3_REGION }}
         run: |
+          mkdir -p ~/.spaces-cli  # Create the directory if it doesn't exist
           echo "[default]" > ~/.spaces-cli/config
           echo "access-key-id = $ACCESS_KEY_ID" >> ~/.spaces-cli/config
           echo "secret-access-key = $SECRET_ACCESS_KEY" >> ~/.spaces-cli/config
