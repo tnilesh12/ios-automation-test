@@ -13,7 +13,7 @@ NEW_PACKAGE_NAME="$2"
 CURRENT_PACKAGE_NAME="$3"
 
 # Paths (relative paths in CI)
-LOCAL_CLIENT_PATH="client_info/$APP_NAME"  # Assuming all client-specific files are under 'client_info'
+LOCAL_CLIENT_PATH="client_info/$NEW_PACKAGE_NAME"  # Assuming all client-specific files are under 'client_info'
 PROJECT_PATH="$(pwd)"
 
 # Files to copy
@@ -65,7 +65,7 @@ echo "key.jks copied successfully!"
 # Update flutter_launcher_icons.yaml
 echo "Copying and updating flutter_launcher_icons.yaml..."
 cp "flutter_launcher_icons_temp.yaml" "flutter_launcher_icons.yaml" || { echo "Failed to copy flutter_launcher_icons_temp.yaml"; exit 1; }
-sed -i "s|APP_NAME|$APP_NAME|g" flutter_launcher_icons.yaml || { echo "Failed to update flutter_launcher_icons.yaml"; exit 1; }
+sed -i "s|APP_PACKAGE_NAME|$NEW_PACKAGE_NAME|g" flutter_launcher_icons.yaml || { echo "Failed to update flutter_launcher_icons.yaml"; exit 1; }
 echo "flutter_launcher_icons.yaml updated successfully!"
 
 # Update package_rename_config.yaml

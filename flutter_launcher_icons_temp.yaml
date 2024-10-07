@@ -3,8 +3,8 @@ dev_dependencies:
 
 flutter_launcher_icons:
   #  image_path: "client_info/app_logo/icon-128x128.jpg"
-  image_path_android: "client_info/APP_NAME/icon-1024x1024.jpg"
-  image_path_ios:  "client_info/APP_NAME/icon-1024x1024.jpg"
+  image_path_android: "client_info/APP_PACKAGE_NAME/icon-1024x1024.jpg"
+  image_path_ios:  "client_info/APP_PACKAGE_NAME/icon-1024x1024.jpg"
   android: true # can specify file name here e.g. "ic_launcher"
   ios: true # can specify file name here e.g. "My-Launcher-Icon"
   #adaptive_icon_background: "client_info/images/christmas-background.jpg" # only available for Android 8.0 devices and above
@@ -14,13 +14,13 @@ flutter_launcher_icons:
   background_color_ios: "#ffffff"
   web:
     generate: true
-    image_path:  "client_info/APP_NAME/icon-1024x1024.jpg"
+    image_path:  "client_info/APP_PACKAGE_NAME/icon-1024x1024.jpg"
     background_color: "#ffffff"
     theme_color: "#ffffff"
   windows:
     generate: true
-    image_path:  "client_info/APP_NAME/icon-1024x1024.jpg"
+    image_path:  "client_info/APP_PACKAGE_NAME/icon-1024x1024.jpg"
     icon_size: 48 # min:48, max:256, default: 48
   macos:
     generate: true
-    image_path:  "client_info/APP_NAME/icon-1024x1024.jpg"
+    image_path:  "client_info/APP_PACKAGE_NAME/icon-1024x1024.jpg"
