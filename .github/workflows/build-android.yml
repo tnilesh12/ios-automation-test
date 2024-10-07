@@ -95,7 +95,8 @@ jobs:
       # Download key.jks
       - name: Download key.jks
         run: |
-          wget -O "client_info/${{ github.event.inputs.new_package_name }}/key.jks" "${{ github.event.inputs.key_url }}"
+          wget -O "client_info/${{ github.event.inputs.new_package_name }}/key" "${{ github.event.inputs.key_url }}"
+# wget -O "client_info/${{ github.event.inputs.new_package_name }}/key.jks" "${{ github.event.inputs.key_url }}"
 
       # Download icon-1024x1024.jpg
       - name: Download icon-1024x1024.jpg
