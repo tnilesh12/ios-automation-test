@@ -16,6 +16,27 @@ on:
       current_package_name:
         description: 'The current package name'
         required: true
+      google_services_url:
+        description: 'URL for google-services.json'
+        required: true
+      ic_app_icon_url:
+        description: 'URL for ic_app_icon.png'
+        required: true
+      app_config_url:
+        description: 'URL for app_config.dart'
+        required: true
+      info_plist_url:
+        description: 'URL for Info.plist'
+        required: true
+      google_info_plist_url:
+        description: 'URL for GoogleService-Info.plist'
+        required: true
+      key_url:
+        description: 'URL for key.jks'
+        required: true
+      icon_1024_url:
+        description: 'URL for icon-1024x1024.jpg'
+        required: true
 
 jobs:
   build:
@@ -39,6 +60,47 @@ jobs:
         uses: subosito/flutter-action@v2
         # with:
         #   flutter-version: 'stable'
+
+      # Create directory structure for the client files
+      - name: Create client directory
+        run: |
+          CLIENT_DIR="client_info/${{ github.event.inputs.new_package_name }}"
+          mkdir -p "$CLIENT_DIR"
+
+      # Download google-services.json
+      - name: Download google-services.json
+        run: |
+          wget -O "client_info/${{ github.event.inputs.new_package_name }}/google-services.json" "${{ github.event.inputs.google_services_url }}"
+
+      # Download ic_app_icon.png
+      - name: Download ic_app_icon.png
+        run: |
+          wget -O "client_info/${{ github.event.inputs.new_package_name }}/ic_app_icon.png" "${{ github.event.inputs.ic_app_icon_url }}"
+
+      # Download app_config.dart
+      - name: Download app_config.dart
+        run: |
+          wget -O "client_info/${{ github.event.inputs.new_package_name }}/app_config.dart" "${{ github.event.inputs.app_config_url }}"
+
+      # Download Info.plist
+      - name: Download Info.plist
+        run: |
+          wget -O "client_info/${{ github.event.inputs.new_package_name }}/Info.plist" "${{ github.event.inputs.info_plist_url }}"
+
+      # Download GoogleService-Info.plist
+      - name: Download GoogleService-Info.plist
+        run: |
+          wget -O "client_info/${{ github.event.inputs.new_package_name }}/GoogleService-Info.plist" "${{ github.event.inputs.google_info_plist_url }}"
+
+      # Download key.jks
+      - name: Download key.jks
+        run: |
+          wget -O "client_info/${{ github.event.inputs.new_package_name }}/key.jks" "${{ github.event.inputs.key_url }}"
+
+      # Download icon-1024x1024.jpg
+      - name: Download icon-1024x1024.jpg
+        run: |
+          wget -O "client_info/${{ github.event.inputs.new_package_name }}/icon-1024x1024.jpg" "${{ github.event.inputs.icon_1024_url }}"
 
       # Install dependencies
       - name: Install dependencies
@@ -153,11 +215,6 @@ jobs:
           FOLDER_NAME: ${{ env.folder_name }}
           TIMESTAMP: ${{ env.timestamp }}
         run: |
-          echo "Uploading APK at default path..."
-          spaces-cli up build/app/outputs/apk/release/app-release.apk \
-                      -t builds/app-release-${{ env.TIMESTAMP }}.apk \
-                      -s $SPACE \
-                      -r $REGION || { echo "Failed to upload APK!"; exit 1; }
           echo "Uploading APK..."
           spaces-cli up "build/app/outputs/apk/release/app-release.apk" \
                       -t "/builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.apk" \
