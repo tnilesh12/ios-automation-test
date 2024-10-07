@@ -7,12 +7,12 @@ if [ "$#" -ne 3 ]; then
     exit 1
 fi
 
-# Assign arguments to variables
+# Assign arguments to variables, use quotes to handle spaces
 APP_NAME="$1"
 NEW_PACKAGE_NAME="$2"
 CURRENT_PACKAGE_NAME="$3"
 
-# Paths (adjusted for relative paths in CI)
+# Paths (relative paths in CI)
 LOCAL_CLIENT_PATH="client_info/$APP_NAME"  # Assuming all client-specific files are under 'client_info'
 PROJECT_PATH="$(pwd)"
 

@@ -129,13 +129,16 @@ jobs:
       - name: Install spaces-cli
         run: npm install -g spaces-cli
 
-      # Generate dynamic folder name with client name and timestamp
+      # Generate dynamic folder name with client name and timestamp, handling spaces
       - name: Create client folder with timestamp
         id: vars
         run: |
           CLIENT_NAME="${{ github.event.inputs.app_name }}"  # Client name from input
           TIMESTAMP=$(date +'%Y%m%d-%H%M%S')
-          echo "folder_name=$CLIENT_NAME/$TIMESTAMP" >> $GITHUB_ENV
+          echo "folder_name=$CLIENT_NAME" | sed 's/ /%20/g') >> $GITHUB_ENV
+#          echo "folder_name=$CLIENT_NAME/$TIMESTAMP" >> $GITHUB_ENV
+#          FOLDER_NAME=$(echo "$CLIENT_NAME/$TIMESTAMP" | sed 's/ /%20/g')  # Escape spaces for URL
+#          echo "folder_name=$FOLDER_NAME" >> $GITHUB_ENV
 
       # Upload APK and AAB to DigitalOcean Spaces using spaces-cli
       - name: Upload APK and AAB
@@ -145,12 +148,13 @@ jobs:
           SPACE: ${{ secrets.S3_SPACE }}
           REGION: ${{ secrets.S3_REGION }}
           FOLDER_NAME: ${{ env.folder_name }}
+          TIMESTAMP: ${{ steps.vars.outputs.TIMESTAMP }}
         run: |
           spaces-cli up build/app/outputs/apk/release/app-release.apk \
-                      -t /builds/$FOLDER_NAME/app-release.apk \
+                      -t /builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.apk \
                       -s $SPACE \
                       -r $REGION
           spaces-cli up build/app/outputs/bundle/release/app-release.aab \
-                      -t /builds/$FOLDER_NAME/app-release.aab \
+                      -t /builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.aab \
                       -s $SPACE \
                       -r $REGION
