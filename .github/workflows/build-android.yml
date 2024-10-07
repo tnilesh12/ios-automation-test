@@ -149,10 +149,10 @@ jobs:
           TIMESTAMP: ${{ env.timestamp }}
         run: |
           spaces-cli up build/app/outputs/apk/release/app-release.apk \
-                      -t /builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.apk \
+                      -t builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.apk \
                       -s $SPACE \
                       -r $REGION
           spaces-cli up build/app/outputs/bundle/release/app-release.aab \
-                      -t /builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.aab \
+                      -t builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.aab \
                       -s $SPACE \
                       -r $REGION
