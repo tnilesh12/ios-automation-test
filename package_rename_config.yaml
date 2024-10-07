@@ -1,0 +1,31 @@
+# dart run package_rename
+package_rename_config:
+  android:
+    app_name: Automation Test 1
+    package_name: com.example.m1
+    override_old_package: com.example.m2
+
+  ios:
+    app_name: Automation Test 1
+    bundle_name: com.example.m1
+    package_name: com.example.m1
+
+  web:
+    app_name: Automation Test 1
+    description: com.example.m1
+
+  linux:
+    app_name: Automation Test 1
+    package_name: com.example.m1
+    exe_name: renamedemo-linux-x64
+
+  windows:
+    app_name: Automation Test 1
+    organization: NT
+    copyright_notice: Copyright © 2024 NT. All rights reserved.
+    exe_name: renamedemo-win32
+
+  macos:
+    app_name: Automation Test 1
+    package_name: com.example.m1
+    copyright_notice: Copyright © 2024 NT. All rights reserved.

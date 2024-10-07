@@ -8,7 +8,7 @@
   <string>manual</string>
   <key>provisioningProfiles</key>
   <dict>
-    <key>com.itgeeks.mobilify</key>  <!-- Replace with your app's bundle identifier -->
+    <key>com.example.m2</key>  <!-- Replace with your app's bundle identifier -->
     <string>MyApp_App_Store_Profile</string>
   </dict>
   <key>teamID</key>

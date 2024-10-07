@@ -1,4 +1,4 @@
-package com.itgeeks.mobilify
+package com.example.m1
 
 import io.flutter.embedding.android.FlutterActivity
 
