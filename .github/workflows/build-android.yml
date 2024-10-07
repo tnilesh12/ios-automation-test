@@ -138,13 +138,13 @@ jobs:
       - name: Create client folder with timestamp
         id: vars
         run: |
-          CLIENT_NAME="${{ github.event.inputs.app_name }}"  # Client name from input
+          CLIENT_PACKAGE_NAME="${{ github.event.inputs.new_package_name }}"  # Client name from input
           TIMESTAMP=$(date +'%Y%m%d-%H%M%S')
-          echo "folder_name=${CLIENT_NAME}" >> $GITHUB_ENV
+          echo "folder_name=${CLIENT_PACKAGE_NAME}" >> $GITHUB_ENV
           echo "timestamp=${TIMESTAMP}" >> $GITHUB_ENV
 
       # Upload APK and AAB to DigitalOcean Spaces using spaces-cli
-      - name: Upload APK and AAB
+      - name: Upload APK and AAB to DigitalOcean Spaces using spaces-cli
         env:
           ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
           SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
@@ -159,12 +159,13 @@ jobs:
                       -s $SPACE \
                       -r $REGION || { echo "Failed to upload APK!"; exit 1; }
           echo "Uploading APK..."
-          spaces-cli up build/app/outputs/apk/release/app-release.apk \
-                      -t builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.apk \
+          spaces-cli up "build/app/outputs/apk/release/app-release.apk" \
+                      -t "/builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.apk" \
                       -s $SPACE \
                       -r $REGION || { echo "Failed to upload APK!"; exit 1; }
           echo "Uploading AAB..."
-          spaces-cli up build/app/outputs/bundle/release/app-release.aab \
-                      -t builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.aab \
+          spaces-cli up "build/app/outputs/bundle/release/app-release.aab" \
+                      -t "/builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.aab" \
                       -s $SPACE \
                       -r $REGION || { echo "Failed to upload AAB!"; exit 1; }
+
