@@ -3,7 +3,7 @@ package_rename_config:
   android:
     app_name: APP_NAME
     package_name: APP_PACKAGE_NAME
-    override_old_package: CURRENT_APP_PACKAGE_NAME
+    # override_old_package: CURRENT_APP_PACKAGE_NAME
 
   ios:
     app_name: APP_NAME

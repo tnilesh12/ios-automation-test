@@ -85,11 +85,16 @@ jobs:
       #       android/app/build/outputs/apk/release/app-release-unsigned.apk \
       #       android/app/build/outputs/apk/release/app-release.apk
 
-      # Debugging step: Print the outputs directory
-      - name: Check build outputs directory
+      # Debugging step: Check if the APK and AAB files exist
+      - name: Check APK and AAB existence
         run: |
-          echo "Listing build outputs..."
-          ls -R build/app/outputs
+          if [ ! -f "build/app/outputs/apk/release/app-release.apk" ]; then
+            echo "APK file not found!"; exit 1;
+          fi
+          if [ ! -f "build/app/outputs/bundle/release/app-release.aab" ]; then
+            echo "AAB file not found!"; exit 1;
+          fi
+
       # #     ls -R build/app/outputs || echo "No build outputs found"
 
       # # # Check if AAB file exists
@@ -148,11 +153,18 @@ jobs:
           FOLDER_NAME: ${{ env.folder_name }}
           TIMESTAMP: ${{ env.timestamp }}
         run: |
+          echo "Uploading APK at default path..."
+          spaces-cli up build/app/outputs/apk/release/app-release.apk \
+                      -t builds/app-release-${{ env.TIMESTAMP }}.apk \
+                      -s $SPACE \
+                      -r $REGION || { echo "Failed to upload APK!"; exit 1; }
+          echo "Uploading APK..."
           spaces-cli up build/app/outputs/apk/release/app-release.apk \
                       -t builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.apk \
                       -s $SPACE \
-                      -r $REGION
+                      -r $REGION || { echo "Failed to upload APK!"; exit 1; }
+          echo "Uploading AAB..."
           spaces-cli up build/app/outputs/bundle/release/app-release.aab \
                       -t builds/${{ env.folder_name }}/app-release-${{ env.TIMESTAMP }}.aab \
                       -s $SPACE \
-                      -r $REGION
+                      -r $REGION || { echo "Failed to upload AAB!"; exit 1; }
